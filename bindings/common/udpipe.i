@@ -340,6 +340,13 @@ class model {
   %newobject load;
   static model* load(const char* fname);
 
+  %extend {
+    static model* load_bin(const std::string& data) const {
+    std::istringstream is(data);
+    return model::load(is);
+   }
+  } 
+  
   %rename(newTokenizer) new_tokenizer;
   %newobject new_tokenizer;
   virtual input_format* new_tokenizer(const std::string& options) const = 0;
