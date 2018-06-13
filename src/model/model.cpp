@@ -8,6 +8,8 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include <fstream>
+#include <string>
+#include <iostream>
 
 #include "model.h"
 #include "model_morphodita_parsito.h"
@@ -28,12 +30,24 @@ model* model::load(const char* fname) {
 
 model* model::load(istream& is) {
   char len;
-  if (!is.get(len)) return nullptr;
+  string prefix = "UdPipe load: ";
+  bool has_char = (bool)is.get(len);
+  if (!has_char) {
+    cout << prefix + "no chars in buffer.\n"; 
+    return nullptr;
+  }
   string name(len, ' ');
-  if (!is.read(&name[0], len)) return nullptr;
+  if (!is.read(&name[0], len)) {
+    cout << prefix + "can't get name.\n";
+    return nullptr;
+  }
 
-  if (name == "morphodita_parsito") return model_morphodita_parsito::load(is);
+  if (name == "morphodita_parsito") { 
+    cout << prefix + "name match ok:" + name + "\n";
+    return model_morphodita_parsito::load(is);
+  }
 
+  cout << prefix + "name match fails:" + name + "\n";
   return nullptr;
 }
 
